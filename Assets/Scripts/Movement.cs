@@ -1,9 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
+using Photon.Realtime;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    //PhotonView 컴포넌트 캐시를 위한 변수 선언
+    private PhotonView pv;
+
+    //시네머신 가상 카메라를 저장할 변수
+    private CinemachineCamera virtualCamera;
+
     // 컴포넌트 캐시 처리를 위한 속성 선언
     // Declare properties for component cache processing
     CharacterController controller;
@@ -35,6 +44,16 @@ public class Movement : MonoBehaviour
         transform = GetComponent<Transform>();
         animator = GetComponent<Animator>();
         camera = Camera.main;
+
+        pv = GetComponent<PhotonView>();
+        virtualCamera = GameObject.FindFirstObjectByType<CinemachineCamera>();
+
+        //PhotonView가 자신의 것일 경우 시네머신 가상카메라를 연결
+        if (pv.IsMine)
+        {
+            virtualCamera.Follow = transform;
+            virtualCamera.LookAt = transform;
+        }
 
         // 가상의 바닥을 플레이어의 위치로 생성
         // Create Virtual Plane by Player Location
