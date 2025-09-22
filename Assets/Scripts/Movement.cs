@@ -5,7 +5,7 @@ using Photon.Realtime;
 using Unity.Cinemachine;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class Movement : MonoBehaviourPunCallbacks, IPunObservable
 {
     //PhotonView 컴포넌트 캐시를 위한 변수 선언
     private PhotonView pv;
@@ -29,6 +29,13 @@ public class Movement : MonoBehaviour
     // 이동 속도 속성
     // Move Speed Properties
     public float moveSpeed = 10.0f;
+
+    // 수신된 위치와 회전값을 저장할 변수
+    Vector3 receiveLoc;
+    Quaternion receiveRot;
+
+    // 수신된 좌표로 이동 및 회전 속도의 민감도
+    public float damping = 10f;
 
     // 사용자 이동 키보드 입력
     // Input Player_move keyboard
@@ -63,13 +70,22 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // 이동 구현
-        // Implementation of movement
-        Move();
-
-        // 회전 구현
-        // Implementation of rotation
-        Turn();
+        // PhotonView에 의해 네트워크의 모든 유저 객체의 위치, 회전값 및 애니메이션이 동기화 됨
+        // 따라서 자신이 생성한 네트워크 객체(player)만 컨트롤 함
+        if (pv.IsMine)
+        {
+            //이동 구현
+            Move();
+            //회전 구현
+            Turn();
+        }
+        else
+        {
+            // 수신된 좌표로 보간한 이동처리
+            transform.position = Vector3.Lerp(transform.position, receiveLoc, Time.deltaTime * damping);
+            // 수신된 회전값으로 보간한 회전처리
+            transform.rotation = Quaternion.Slerp(transform.rotation, receiveRot, Time.deltaTime * damping);
+        }
     }
 
     void Move()
@@ -124,5 +140,20 @@ public class Movement : MonoBehaviour
         // Specify the rotation value of the player
         transform.localRotation = Quaternion.LookRotation(lookDir);
 
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        // 자신의 로컬 캐릭터인 경우 자신의 데이터를 다른 네트워크 유저에게 송신
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+        }
+        else
+        {
+            receiveLoc = (Vector3)stream.ReceiveNext();
+            receiveRot = (Quaternion)stream.ReceiveNext();
+        }
     }
 }

@@ -1094,6 +1094,7 @@ GameObject:
   - component: {fileID: 6151048718647211021}
   - component: {fileID: 1221358941349703000}
   - component: {fileID: 4673122356893726412}
+  - component: {fileID: -8069783173112328917}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1181,6 +1182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
+  damping: 10
 --- !u!114 &1221358941349703000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1200,6 +1202,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
+  - {fileID: 6151048718647211021}
   - {fileID: 4673122356893726412}
   sceneViewId: 0
   InstantiationId: 0
@@ -1220,6 +1223,20 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &-8069783173112328917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6704781378918927110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aac142fe2b7bd745ab0f0efe41de4cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firePos: {fileID: 3101528245443674916}
+  bulletPrefab: {fileID: 1063768935866371295, guid: 9b92c9912a2d78348847cfcf6e74207b, type: 3}
 --- !u!1 &6705904735027274733
 GameObject:
   m_ObjectHideFlags: 0

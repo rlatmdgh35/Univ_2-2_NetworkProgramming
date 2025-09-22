@@ -1,0 +1,22 @@
+using UnityEngine;
+
+public class Bullet : MonoBehaviour
+{
+    public GameObject effect;
+
+    void Start()
+    {
+        GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * 1000.0f);
+        // 일정시간이 지난 후 총알을 삭제
+        Destroy(gameObject, 3.0f);
+    }
+    void OnCollisionEnter(Collision coll)
+    {
+        // 충돌 지점 추출
+        var contact = coll.GetContact(0);
+        // 충돌 지점에 스파크 이펙트 생성
+        var obj = Instantiate(effect, contact.point, Quaternion.LookRotation(-contact.normal));
+        Destroy(obj, 2.0f);
+        Destroy(gameObject);
+    }
+}
